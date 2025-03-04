@@ -1,82 +1,111 @@
-## Sprint 2 - Backend API Documentation
+🚀 Sprint 2 - Backend API Documentation 🛠️
+Welcome to the backend API documentation for Sprint 2! This guide outlines our database connection, routes, and helper functions. Let's dive in! 🏊‍♂️
 
-### Database Connection
-- Function: ConnectDB()
-- Description: Establishes a connection to the PostgreSQL database using environment variables.
-- Error Handling: Logs fatal errors if unable to load .env file or connect to the database.
+🔌 Database Connection
+Our trusty ConnectDB() function establishes a connection to PostgreSQL:
 
-### Routes
+🔐 Uses environment variables for secure access
 
-#### 1. Home Page
-- Method: GET
-- Path: "/"
-- Description: Serves the main index.html file.
+🚨 Logs fatal errors if things go sideways
 
-#### 2. Login Page
-- Method: GET
-- Path: "/login"
-- Description: Serves the login.html file.
+🛣️ Routes
+1. 🏠 Home Page
+GET /
 
-#### 3. Registration Page
-- Method: GET
-- Path: "/register"
-- Description: Serves the register.html file.
+Serves up our main index.html file
 
-#### 4. About Us Page
-- Method: GET
-- Path: "/about-us"
-- Description: Serves the about.html file.
+2. 🔑 Login Page
+GET /login
 
-#### 5. User Registration
-- Method: POST
-- Path: "/register"
-- Description: Handles user registration.
-- Request Body:
-  - username: string (required, alphanumeric)
-  - email: string (required)
-  - password: string (required, alphanumeric)
-- Responses:
-  - 200 OK: Successful registration, redirects to home page
-  - 400 Bad Request: Missing fields or non-alphanumeric username/password
-  - 500 Internal Server Error: Database insertion failure
+Delivers the login.html file
 
-#### 6. User Login
-- Method: POST
-- Path: "/login"
-- Description: Handles user login.
-- Request Body:
-  - username: string (required)
-  - password: string (required)
-- Responses:
-  - 200 OK: Successful login, redirects to expenses page
-  - 400 Bad Request: Missing username or password
-  - 401 Unauthorized: Invalid username or password
-  - 500 Internal Server Error: Database query failure
+3. 📝 Registration Page
+GET /register
 
-#### 7. Expenses List
-- Method: GET
-- Path: "/expenses"
-- Description: Retrieves and displays the list of expenses.
-- Responses:
-  - 200 OK: Successfully fetched expenses, renders expenses.html
-  - 500 Internal Server Error: Failed to fetch or parse expenses
+Hands over the register.html file
 
-### Helper Functions
+4. ℹ️ About Us Page
+GET /about-us
 
-#### isAlphanumeric
-- Description: Checks if a given string contains only alphanumeric characters.
-- Parameters:
-  - s: string
-- Returns: bool
+Presents the about.html file
 
-### Environment Variables
-The following environment variables are required:
-- DB_HOST: Database host
-- DB_PORT: Database port
-- DB_USER: Database username
-- DB_PASSWORD: Database password
-- DB_NAME: Database name
+5. 👤 User Registration
+POST /register
 
-### Server Configuration
-- Port: 8080
-- Static file serving: "./client/build/static"
+Handles new user sign-ups
+
+📦 Request Body:
+
+username: string (required, alphanumeric)
+
+email: string (required)
+
+password: string (required, alphanumeric)
+
+📬 Responses:
+
+200 OK: Welcome aboard! 🎉
+
+400 Bad Request: Oops, something's missing or incorrect 😕
+
+500 Internal Server Error: Houston, we have a problem 🚀💥
+
+6. 🔓 User Login
+POST /login
+
+Gets users into their accounts
+
+📦 Request Body:
+
+username: string (required)
+
+password: string (required)
+
+📬 Responses:
+
+200 OK: You're in! 🎊
+
+400 Bad Request: Forgot something? 🤔
+
+401 Unauthorized: Who goes there? 🕵️‍♂️
+
+500 Internal Server Error: Gremlins in the system 👾
+
+7. 💰 Expenses List
+GET /expenses
+
+Fetches and displays the user's expenses
+
+📬 Responses:
+
+200 OK: Here's your spending report 📊
+
+500 Internal Server Error: Our piggy bank is stuck 🐷
+
+🛠️ Helper Functions
+isAlphanumeric
+Checks if a string is alphanumeric
+
+Parameters:
+
+s: string
+
+Returns: bool (true for alphanumeric, false otherwise)
+
+🌳 Environment Variables
+Don't forget to set these up!
+
+DB_HOST: Where's the party? 🎉
+
+DB_PORT: Which door? 🚪
+
+DB_USER: VIP name 🕴️
+
+DB_PASSWORD: Secret handshake 🤝
+
+DB_NAME: Party theme 🎭
+
+⚙️ Server Configuration
+Port: 8080 (We're all ears! 👂)
+
+Static files: Served fresh from "./client/build/static" 📁
