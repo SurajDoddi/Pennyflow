@@ -58,12 +58,17 @@ func main() {
 	ConnectDB()
 	defer DB.Close()
 
+	// Initialize Gin router
 	r := gin.Default()
 
+	// Set up HTML rendering
 	buildPath, _ := filepath.Abs("./client/build")
+	r.LoadHTMLGlob(filepath.Join(buildPath, "*.html"))
 
+	// Serve static files
 	r.Static("/static", filepath.Join(buildPath, "static"))
 
+	// Handle routes
 	r.GET("/", func(c *gin.Context) {
 		c.File(filepath.Join(buildPath, "index.html"))
 	})
@@ -80,41 +85,58 @@ func main() {
 		c.File(filepath.Join(buildPath, "about.html"))
 	})
 
+	// Handle user registration
 	r.POST("/register", func(c *gin.Context) {
 		username := c.PostForm("username")
 		email := c.PostForm("email")
 		password := c.PostForm("password")
-
+	
+		// Log received data
+		log.Printf("Received registration request for username: %s, email: %s", username, email)
+	
+		// Validate inputs
 		if username == "" || email == "" || password == "" {
 			c.HTML(http.StatusBadRequest, "register.html", gin.H{"error": "All fields are required"})
 			return
 		}
-
+	
 		if !isAlphanumeric(username) || !isAlphanumeric(password) {
 			c.HTML(http.StatusBadRequest, "register.html", gin.H{"error": "Username and password must be alphanumeric"})
 			return
 		}
-
+	
 		_, err := DB.Exec("INSERT INTO signup (username, email, password) VALUES ($1, $2, $3)", username, email, password)
 		if err != nil {
+			log.Printf("Error executing query: %v", err) // Log the exact database query error
 			c.HTML(http.StatusInternalServerError, "register.html", gin.H{"error": "Failed to register user"})
 			return
 		}
+		
+		
 
+	
+		// Log success
+		log.Println("User successfully registered!")
+	
+		// Redirect to home page on successful registration
 		c.Redirect(http.StatusSeeOther, "/")
 	})
+	
 
+	// Handle login
 	r.POST("/login", func(c *gin.Context) {
 		username := c.PostForm("username")
 		password := c.PostForm("password")
 
+		// Validate inputs
 		if username == "" || password == "" {
 			c.HTML(http.StatusBadRequest, "login.html", gin.H{"error": "Username and password are required"})
 			return
 		}
 
+		// Check credentials in the database
 		var dbPassword string
-		err := DB.QueryRow("SELECT password FROM login WHERE username = $1", username).Scan(&dbPassword)
+		err := DB.QueryRow("SELECT password FROM signup WHERE username = $1", username).Scan(&dbPassword)
 
 		if err != nil {
 			if err == sql.ErrNoRows {
@@ -125,14 +147,17 @@ func main() {
 			return
 		}
 
+		// Validate password
 		if dbPassword != password {
 			c.HTML(http.StatusUnauthorized, "login.html", gin.H{"error": "Invalid username or password"})
 			return
 		}
 
+		// Redirect to expenses page on successful login
 		c.Redirect(http.StatusSeeOther, "/expenses")
 	})
 
+	// Handle displaying expenses
 	r.GET("/expenses", func(c *gin.Context) {
 		rows, err := DB.Query("SELECT id, description, amount FROM expenses ORDER BY id ASC")
 		if err != nil {
@@ -164,6 +189,7 @@ func main() {
 		})
 	})
 
+	// Start the server
 	port := "8080"
 	fmt.Println("Server running on http://localhost:" + port)
 	err := r.Run(":" + port)
