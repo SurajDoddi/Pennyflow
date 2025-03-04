@@ -74,7 +74,7 @@ password: string (required)
 7. 💰 Expenses List
 GET /expenses
 
-Fetches and displays the user's expenses
+Fetches the user's expenses
 
 📬 Responses:
 
