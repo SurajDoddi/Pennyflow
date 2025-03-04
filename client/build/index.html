@@ -4,32 +4,84 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pennyflow - Track Your Expenses Simply</title>
-    <link rel="stylesheet" href="static/css/index.css"> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            background-color: #f0f0f0; /* Optional: Add a background color to the body */
+        }
+        header {
+            background-color: rgba(0, 5, 7, 0.8);
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+        }
+        header h1 {
+            margin: 0;
+        }
+        header p {
+            font-size: 1.2em;
+        }
+        .cta-button {
+            display: inline-block;
+            background-color: #fff;
+            color: #007bff;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 10px;
+        }
+        .content {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-size: cover;
+            background-position: center;
+            background-color: rgba(255, 255, 255, 0.8); /* Keep the semi-transparent white */
+            border-radius: 10px;
+        }
+        .features {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .feature {
+            text-align: center;
+            margin: 20px;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: #fff;
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <h1>Pennyflow</h1>
+    <header class="animate__animated animate__fadeInDown">
+        <h1 class="animate__animated animate__bounce">Pennyflow</h1>
         <p>Track your spending, categorize your expenses, and gain insights into your financial health.</p>
         <a href="/login" class="cta-button">Login</a>
         <a href="/register" class="cta-button">Register</a>
         <a href="/about-us" class="cta-button">About Us</a>
     </header>
 
-    <!-- Main Content Section -->
     <section class="content">
-        <h2>Simple, Effective, and Insightful</h2>
-        <p>Pennyflow makes managing your finances easier than ever. Track your expenses, categorize your purchases, and see where your money is going. All from one easy-to-use platform.</p>
+        <h2 class="animate__animated animate__fadeIn">Simple, Effective, and Insightful</h2>
+        <p class="animate__animated animate__fadeInUp">Pennyflow makes managing your finances easier than ever. Track your expenses, categorize your purchases, and see where your money is going. All from one easy-to-use platform.</p>
 
         <div class="features">
             <div class="feature">
-                <!-- <img src="../assets/logo.svg" alt="Track Expenses"> -->
+                <img src="./static/assets/money_image.jpg" alt="Track Expenses" width="100" class="animate__animated animate__pulse animate__infinite">
                 <h3>Track Expenses</h3>
                 <p>Quickly log all your expenses in just a few taps.</p>
             </div>
         </div>
     </section>
 
-    <!-- Footer Section -->
     <footer>
         <p>&copy; 2025 Pennyflow | All rights reserved.</p>
     </footer>
