@@ -1,14 +1,17 @@
 /* Global Styles */
 body {
+    background: url('https://i.pinimg.com/736x/6b/4a/48/6b4a48fbd58f0aa4b392fcf86687ceaa.jpg') no-repeat center center fixed;
+    background-size: 85%;
     font-family: 'Poppins', sans-serif;
-    background: linear-gradient(to right, #2D3E50, #2D3E50);
+    /*background: #E8F5E9;*/
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    min-height: 100vh;
+    height: 100%;
     margin: 0;
 }
-
+/*https://i.pinimg.com/736x/28/38/84/2838843632c502f136e61e6fc35c16df.jpg*/
 /* Login Container */
 .login-container {
     background: white;
@@ -16,30 +19,37 @@ body {
     border-radius: 10px;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
     width: 350px;
+    margin: 50px auto;
     text-align: center;
 }
 
 /* Input Fields */
 .input-group {
-    margin: 15px 0;
+    width: 100%;
+    margin: 10px 0;
 }
 
-input {
+.input-group input {
     width: 100%;
     padding: 12px;
-    border: 1px solid #ccc;
+    border: 1px solid #C8E6C9;  /* Consistent green border */
     border-radius: 5px;
+    background-color: #F1F8E9;  /* Light green background */
+    color: #2E7D32;  /* Dark green text */
     font-size: 16px;
     outline: none;
 }
 
-
+input:focus {
+    border-color: #4CAF50;
+    box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+}
 
 /* Button */
 button {
     width: 100%;
-    padding: 12px;
-    background: #437ab1;
+    padding: 10px;
+    background: #4CAF50;
     color: white;
     border: none;
     border-radius: 5px;
@@ -49,7 +59,7 @@ button {
 }
 
 button:hover {
-    background: #437ab1;
+    background: #388E3C;
 }
 
 /* Links */
@@ -59,7 +69,7 @@ p {
 }
 
 a {
-    color: #437ab1;
+    color:#2E7D32;
     text-decoration: none;
     font-weight: bold;
 }
@@ -67,3 +77,4 @@ a {
 a:hover {
     text-decoration: underline;
 }
+>>>>>>> cd82da5 (added login and register styles)
