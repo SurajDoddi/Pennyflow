@@ -12,11 +12,12 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
+	"golang.org/x/crypto/bcrypt"
 )
 
 var DB *sql.DB
 
-// ConnectDB connects to the PostgreSQL database
+// ConnectDB connects to the PostgreSQL database and creates necessary tables if they do not exist
 func ConnectDB() {
 	err := godotenv.Load()
 	if err != nil {
@@ -41,6 +42,40 @@ func ConnectDB() {
 	}
 
 	log.Println("Database connected successfully!")
+
+	// Create tables if they don't exist
+	createTables()
+}
+
+// createTables creates the necessary tables if they don't exist
+func createTables() {
+	// Create the 'signup' table
+	_, err := DB.Exec(`
+		CREATE TABLE IF NOT EXISTS signup (
+			id SERIAL PRIMARY KEY,
+			username VARCHAR(100) NOT NULL,
+			email VARCHAR(100) NOT NULL,
+			password VARCHAR(255) NOT NULL
+		);
+	`)
+	if err != nil {
+		log.Fatalf("Error creating signup table: %v", err)
+	}
+
+	// Create the 'expenses' table
+	_, err = DB.Exec(`
+		CREATE TABLE IF NOT EXISTS expenses (
+			id SERIAL PRIMARY KEY,
+			description TEXT NOT NULL,
+			amount DECIMAL(10, 2) NOT NULL,
+			created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+		);
+	`)
+	if err != nil {
+		log.Fatalf("Error creating expenses table: %v", err)
+	}
+
+	log.Println("Tables are ready!")
 }
 
 // Helper function to check if a string is alphanumeric
@@ -54,7 +89,7 @@ func isAlphanumeric(s string) bool {
 }
 
 func main() {
-	// Connect to the database
+	// Connect to the database and ensure tables are created
 	ConnectDB()
 	defer DB.Close()
 
@@ -85,79 +120,76 @@ func main() {
 		c.File(filepath.Join(buildPath, "about.html"))
 	})
 
-	// Handle user registration
+	// Handle user registration (with password hashing)
 	r.POST("/register", func(c *gin.Context) {
 		username := c.PostForm("username")
 		email := c.PostForm("email")
 		password := c.PostForm("password")
-	
-		// Log received data
-		log.Printf("Received registration request for username: %s, email: %s", username, email)
-	
-		// Validate inputs
-		if username == "" || email == "" || password == "" {
-			c.HTML(http.StatusBadRequest, "register.html", gin.H{"error": "All fields are required"})
-			return
-		}
-	
-		if !isAlphanumeric(username) || !isAlphanumeric(password) {
-			c.HTML(http.StatusBadRequest, "register.html", gin.H{"error": "Username and password must be alphanumeric"})
-			return
-		}
-	
-		_, err := DB.Exec("INSERT INTO signup (username, email, password) VALUES ($1, $2, $3)", username, email, password)
+
+		// Hash the password
+		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 		if err != nil {
-			log.Printf("Error executing query: %v", err) // Log the exact database query error
+			log.Printf("Error hashing password: %v", err)
+			c.HTML(http.StatusInternalServerError, "register.html", gin.H{"error": "Failed to hash password"})
+			return
+		}
+
+		// Store hashed password in the database
+		_, err = DB.Exec("INSERT INTO signup (username, email, password) VALUES ($1, $2, $3)", username, email, string(hashedPassword))
+		if err != nil {
+			log.Printf("Error executing query: %v", err)
 			c.HTML(http.StatusInternalServerError, "register.html", gin.H{"error": "Failed to register user"})
 			return
 		}
-		
-		
 
-	
-		// Log success
 		log.Println("User successfully registered!")
-	
-		// Redirect to home page on successful registration
 		c.Redirect(http.StatusSeeOther, "/")
 	})
-	
 
-	// Handle login
+	// Handle login (with password verification)
 	r.POST("/login", func(c *gin.Context) {
 		username := c.PostForm("username")
 		password := c.PostForm("password")
 
-		// Validate inputs
+		log.Printf("Login attempt for username: %s", username)
+
 		if username == "" || password == "" {
+			log.Println("Login failed: Missing username or password")
 			c.HTML(http.StatusBadRequest, "login.html", gin.H{"error": "Username and password are required"})
 			return
 		}
 
-		// Check credentials in the database
-		var dbPassword string
-		err := DB.QueryRow("SELECT password FROM signup WHERE username = $1", username).Scan(&dbPassword)
+		// Retrieve hashed password from database
+		var hashedPassword string
+		err := DB.QueryRow("SELECT password FROM signup WHERE username = $1", username).Scan(&hashedPassword)
 
 		if err != nil {
 			if err == sql.ErrNoRows {
-				c.HTML(http.StatusUnauthorized, "login.html", gin.H{"error": "Invalid username or password"})
+				log.Println("Login failed: Account does not exist")
+				c.HTML(http.StatusUnauthorized, "login.html", gin.H{"error": "Account does not exist. Please register first."})
 				return
 			}
+			log.Println("Database error during login:", err)
 			c.HTML(http.StatusInternalServerError, "login.html", gin.H{"error": "Database error"})
 			return
 		}
 
-		// Validate password
-		if dbPassword != password {
+		// Compare the entered password with the hashed password stored in the database
+		err = bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
+		if err != nil {
+			log.Println("Login failed: Incorrect password")
 			c.HTML(http.StatusUnauthorized, "login.html", gin.H{"error": "Invalid username or password"})
 			return
 		}
+
+		// Log successful login
+		log.Printf("Login successful for user: %s", username)
 
 		// Redirect to expenses page on successful login
 		c.Redirect(http.StatusSeeOther, "/expenses")
 	})
 
-	// Handle displaying expenses
+	// Handle displaying expenses (for logged-in users)
 	r.GET("/expenses", func(c *gin.Context) {
 		rows, err := DB.Query("SELECT id, description, amount FROM expenses ORDER BY id ASC")
 		if err != nil {
