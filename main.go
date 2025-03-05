@@ -7,6 +7,8 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strconv"
+	"time"
 	"unicode"
 
 	"github.com/gin-gonic/gin"
@@ -86,6 +88,55 @@ func isAlphanumeric(s string) bool {
 		}
 	}
 	return true
+}
+
+// AddExpense adds a new expense to the database
+func AddExpense(description string, amount float64) error {
+	// Validate input
+	if description == "" {
+		return fmt.Errorf("description cannot be empty")
+	}
+	if amount <= 0 {
+		return fmt.Errorf("amount must be greater than zero")
+	}
+
+	// Prepare and execute the SQL statement
+	stmt, err := DB.Prepare("INSERT INTO expenses (description, amount) VALUES ($1, $2)")
+	if err != nil {
+		log.Printf("Error preparing insert statement: %v", err)
+		return fmt.Errorf("failed to prepare insert statement: %w", err)
+	}
+	defer stmt.Close()
+
+	// Execute the statement
+	_, err = stmt.Exec(description, amount)
+	if err != nil {
+		log.Printf("Error executing insert statement: %v", err)
+		return fmt.Errorf("failed to insert expense: %w", err)
+	}
+
+	log.Printf("Expense added: %s - $%.2f", description, amount)
+	return nil
+}
+
+// DeleteExpense removes an expense from the database by its ID
+func DeleteExpense(id int) error {
+	_, err := DB.Exec("DELETE FROM expenses WHERE id = $1", id)
+	if err != nil {
+		log.Printf("Error deleting expense: %v", err)
+		return err
+	}
+	return nil
+}
+
+// UpdateExpense modifies an existing expense in the database
+func UpdateExpense(id int, description string, amount float64) error {
+	_, err := DB.Exec("UPDATE expenses SET description = $1, amount = $2 WHERE id = $3", description, amount, id)
+	if err != nil {
+		log.Printf("Error updating expense: %v", err)
+		return err
+	}
+	return nil
 }
 
 func main() {
@@ -190,8 +241,12 @@ func main() {
 	})
 
 	// Handle displaying expenses (for logged-in users)
+
+	// AddExpense adds a new expense to the database
+
+	// Add these routes to your main() function within the router setup
 	r.GET("/expenses", func(c *gin.Context) {
-		rows, err := DB.Query("SELECT id, description, amount FROM expenses ORDER BY id ASC")
+		rows, err := DB.Query("SELECT id, description, amount, created_at FROM expenses ORDER BY created_at DESC")
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch expenses"})
 			return
@@ -199,12 +254,14 @@ func main() {
 		defer rows.Close()
 
 		var expenses []map[string]interface{}
+		var totalExpenses float64
 		for rows.Next() {
 			var id int
 			var description string
 			var amount float64
+			var createdAt time.Time
 
-			if err := rows.Scan(&id, &description, &amount); err != nil {
+			if err := rows.Scan(&id, &description, &amount, &createdAt); err != nil {
 				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to parse expenses"})
 				return
 			}
@@ -213,12 +270,98 @@ func main() {
 				"id":          id,
 				"description": description,
 				"amount":      amount,
+				"created_at":  createdAt.Format("2006-01-02 15:04:05"),
 			})
+
+			totalExpenses += amount
 		}
 
 		c.HTML(http.StatusOK, "expenses.html", gin.H{
-			"expenses": expenses,
+			"expenses":      expenses,
+			"totalExpenses": totalExpenses,
 		})
+	})
+
+	// Route to handle adding a new expense
+	r.POST("/expenses", func(c *gin.Context) {
+		description := c.PostForm("description")
+		amountStr := c.PostForm("amount")
+
+		// Validate inputs
+		if description == "" || amountStr == "" {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Description and amount are required"})
+			return
+		}
+
+		// Convert amount to float
+		amount, err := strconv.ParseFloat(amountStr, 64)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid amount"})
+			return
+		}
+
+		// Add expense to database
+		err = AddExpense(description, amount)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to add expense"})
+			return
+		}
+
+		// Redirect back to expenses page
+		c.Redirect(http.StatusSeeOther, "/expenses")
+	})
+
+	// Route to handle deleting an expense
+	r.DELETE("/expenses/:id", func(c *gin.Context) {
+		idStr := c.Param("id")
+		id, err := strconv.Atoi(idStr)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid expense ID"})
+			return
+		}
+
+		err = DeleteExpense(id)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete expense"})
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{"message": "Expense deleted successfully"})
+	})
+
+	// Route to handle updating an expense
+	r.PUT("/expenses/:id", func(c *gin.Context) {
+		idStr := c.Param("id")
+		id, err := strconv.Atoi(idStr)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid expense ID"})
+			return
+		}
+
+		description := c.PostForm("description")
+		amountStr := c.PostForm("amount")
+
+		// Validate inputs
+		if description == "" || amountStr == "" {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Description and amount are required"})
+			return
+		}
+
+		// Convert amount to float
+		amount, err := strconv.ParseFloat(amountStr, 64)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid amount"})
+			return
+		}
+
+		// Update expense in database
+		err = UpdateExpense(id, description, amount)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update expense"})
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{"message": "Expense updated successfully"})
 	})
 
 	// Start the server

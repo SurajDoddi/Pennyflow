@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PennyFlow - Expenses</title>
+    <link rel="stylesheet" href="/static/css/expenses.css">
+</head>
+<body>
+    <header>
+        <h1>Expense Tracker</h1>
+        <p>Track and Manage Your Expenses</p>
+    </header>
+
+    <div class="expenses-container">
+        {{if .expenses}}
+            <table class="expenses-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Description</th>
+                        <th>Amount</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{range .expenses}}
+                        <tr>
+                            <td>{{.id}}</td>
+                            <td>{{.description}}</td>
+                            <td>${{printf "%.2f" .amount}}</td>
+                            <td>{{.created_at}}</td>
+                        </tr>
+                    {{end}}
+                </tbody>
+            </table>
+
+            <div class="total-expenses">
+                Total Expenses: ${{printf "%.2f" .totalExpenses}}
+            </div>
+        {{else}}
+            <div class="no-expenses">
+                No expenses recorded yet. Start tracking your spending!
+            </div>
+        {{end}}
+
+        <div class="action-buttons">
+            <a href="/add-expense" class="cta-button">Add New Expense</a>
+            <a href="/" class="secondary-button">Back to Home</a>
+        </div>
+    </div>
+
+    <footer>
+        &copy; 2025 PennyFlow. All Rights Reserved.
+    </footer>
+</body>
+</html>

@@ -69,7 +69,7 @@ input:focus {
 button {
     width: 100%;
     padding: 12px;
-    background: #007bff;
+    background: #2D3E50;
     color: white;
     border: none;
     border-radius: 8px;
@@ -80,12 +80,12 @@ button {
 }
 
 button:hover {
-    background: #0056b3;
+    background: #2D3E50;
 }
 
 /* Links */
 a {
-    color: #007bff;
+    color: #2D3E50;
     text-decoration: none;
     font-weight: bold;
 }
