@@ -5,8 +5,8 @@ describe('Login Page Test', () => {
 
   it('should have the correct form elements and submit to the correct URL with POST', () => {
     cy.get('form').should('exist');
-    cy.get('input[placeholder="Username"]').should('exist');
-    cy.get('input[placeholder="Password"]').should('exist');
+    cy.get('#username').should('exist');
+    cy.get('#password').should('exist');
     cy.get('button[type="submit"]').should('exist').contains('Login');
     cy.get('form').should('have.attr', 'action', '/login');
     cy.get('form').should('have.attr', 'method', 'POST');
@@ -22,15 +22,16 @@ describe('Login Page Test', () => {
 
   it('should not submit the form with empty fields', () => {
     cy.get('button[type="submit"]').click();
-    cy.url().should('include', '/login'); // Should stay on login page
+    cy.get('#username:invalid').should('exist');
+    cy.get('#password:invalid').should('exist');
   });
 
   it('should have password field of type "password"', () => {
-    cy.get('input[placeholder="Password"]').should('have.attr', 'type', 'password');
+    cy.get('#password').should('have.attr', 'type', 'password');
   });
 
   it('should have required attribute on input fields', () => {
-    cy.get('input[placeholder="Username"]').should('have.attr', 'required');
-    cy.get('input[placeholder="Password"]').should('have.attr', 'required');
+    cy.get('#username').should('have.attr', 'required');
+    cy.get('#password').should('have.attr', 'required');
   });
 });
