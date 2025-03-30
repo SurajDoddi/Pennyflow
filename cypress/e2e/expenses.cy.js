@@ -39,7 +39,7 @@ describe('PennyFlow Expenses Page Test', () => {
     });
   
     it('should display action buttons with correct links', () => {
-      cy.get('.action-buttons a').contains('Add New Expense').should('have.attr', 'href', '/add-expense');
+      cy.get('.action-buttons a').contains('Add New Expense').should('have.attr', 'href', '/add_expense');
       cy.get('.action-buttons a').contains('Back to Home').should('have.attr', 'href', '/');
     });
   

@@ -26,17 +26,17 @@
                 <tbody>
                     {{range .expenses}}
                         <tr>
-                            <td>{{.id}}</td>
-                            <td>{{.description}}</td>
-                            <td>${{printf "%.2f" .amount}}</td>
-                            <td>{{.created_at}}</td>
+                            <td>{{.ID}}</td>
+                            <td>{{.Description}}</td>
+                            <td>${{printf "%.2f" .Amount}}</td>
+                            <td class="createdAt">{{.CreatedAt}}</td> <!-- Pass the raw CreatedAt value -->
                         </tr>
                     {{end}}
                 </tbody>
             </table>
 
             <div class="total-expenses">
-                Total Expenses: ${{printf "%.2f" .totalExpenses}}
+                Total Expenses: ${{printf "%.2f" .totalAmount}}
             </div>
         {{else}}
             <div class="no-expenses">
@@ -45,7 +45,7 @@
         {{end}}
 
         <div class="action-buttons">
-            <a href="/add-expense" class="cta-button">Add New Expense</a>
+            <a href="/add_expense" class="cta-button">Add New Expense</a>
             <a href="/" class="secondary-button">Back to Home</a>
         </div>
     </div>
@@ -53,5 +53,20 @@
     <footer>
         &copy; 2025 PennyFlow. All Rights Reserved.
     </footer>
+
+    <script>
+        function formatCreatedAt() {
+            const createdAtElements = document.querySelectorAll(".createdAt");
+            createdAtElements.forEach(element => {
+                const isoString = element.textContent;
+                const date = new Date(isoString);
+                const formattedDateTime = date.toLocaleString();
+                element.textContent = formattedDateTime;
+            });
+        }
+
+        // Call the function to format the dates after the page loads
+        document.addEventListener("DOMContentLoaded", formatCreatedAt);
+    </script>
 </body>
 </html>

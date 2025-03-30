@@ -1,0 +1,161 @@
+/* General Styles */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background-color: #f9fafb;
+    margin: 0;
+    padding: 0;
+    padding-top: 100px; /* Ensures content starts below header */
+}
+
+header {
+    width: 100%;
+    background-color: #2D3E50;
+    color: white;
+    padding: 20px;
+    text-align: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: auto; /* Adjusted height */
+    z-index: 1000; /* Ensures header stays on top */
+}
+
+header h1 {
+    font-size: 2rem;
+    margin: 0;
+}
+
+header p {
+    margin: 5px 0 0;
+    font-size: 1rem;
+    opacity: 0.9;
+}
+
+/* Expenses List Page */
+.expenses-container {
+    max-width: 900px;
+    margin: 40px auto;
+    background-color: white;
+    border-radius: 12px; /* Slightly more rounded */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Stronger shadow for depth */
+    padding: 30px;
+    transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+.expenses-container:hover {
+    transform: translateY(-5px); /* Subtle lift effect */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* Add Expense Form */
+.expense-form-container {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px; /* Consistent with container */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+    max-width: 400px;
+    margin: 35px auto; 
+    margin-bottom: 85px;
+    transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+.expense-form-container:hover {
+    transform: scale(1.02); /* Slight pop effect on hover */
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.18);
+}
+
+.expense-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.8rem; /* Increased spacing */
+    
+}
+
+.form-group label {
+    font-weight: bold;
+    font-size: 1rem;
+    color: #2D3E50;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    padding: 12px 14px;
+    border: 1px solid #ccc;
+    border-radius: 6px; /* More rounded */
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: #f8f9fa;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: #FF7043;
+    box-shadow: 0 0 8px rgba(255, 112, 67, 0.4);
+    background: white;
+}
+
+.cta-button {
+    background-color: #FF7043;
+    color: white;
+    padding: 12px 30px;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 6px;
+    transition: background 0.3s ease, transform 0.2s ease;
+    border: none;
+    cursor: pointer;
+    text-align: center;
+}
+
+.cta-button:hover {
+    background-color: #FF5722;
+    transform: translateY(-3px);
+}
+
+.secondary-button {
+    background-color: #2D3E50;
+    color: white;
+    padding: 12px 30px;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 6px;
+    transition: background 0.3s ease, transform 0.2s ease;
+    border: none;
+    cursor: pointer;
+    text-align: center;
+}
+
+.secondary-button:hover {
+    background-color: #3E5570;
+    transform: translateY(-3px);
+}
+
+
+footer {
+    background-color: #2D3E50;
+    color: white;
+    text-align: center;
+    padding: 15px 0;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .expenses-container {
+        margin: 20px 10px;
+        padding: 15px;
+    }
+
+    .action-buttons,
+    .form-actions {
+        flex-direction: column;
+        align-items: center;
+    }
+}
