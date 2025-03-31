@@ -31,32 +31,45 @@ func GetExpenses(c *gin.Context) {
 
 	// Create a slice to hold expenses with formatted created_at (date + time)
 	var expensesWithFormattedDate []struct {
-		ID          int
-		Description string
-		Amount      float64
-		CreatedAt   time.Time // Single field for formatted created_at
+		ID            int
+		Description   string
+		Amount        float64
+		Category      string
+		PaymentMethod string
+		CreatedAt     time.Time // Single field for formatted created_at
 	}
 
 	// Process expenses
 	for _, exp := range expenses {
 		// Ensure the displayed date and time are the user-provided ones
 		expensesWithFormattedDate = append(expensesWithFormattedDate, struct {
-			ID          int
-			Description string
-			Amount      float64
-			CreatedAt   time.Time
+			ID            int
+			Description   string
+			Amount        float64
+			Category      string
+			PaymentMethod string
+			CreatedAt     time.Time
 		}{
-			ID:          exp.ID,
-			Description: exp.Description,
-			Amount:      exp.Amount,
-			CreatedAt:   exp.CreatedAt,
+			ID:            exp.ID,
+			Description:   exp.Description,
+			Amount:        exp.Amount,
+			Category:      exp.Category,
+			PaymentMethod: exp.PaymentMethod,
+			CreatedAt:     exp.CreatedAt,
 		})
 	}
 
-	// Return the list of expenses with merged date and time
+	userName, err := models.GetUserNameByID(userID.(int))
+	if err != nil {
+		log.Printf("Error fetching user name: %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch user name"})
+		return
+	}
+
 	c.HTML(http.StatusOK, "expenses.html", gin.H{
 		"expenses":    expensesWithFormattedDate,
 		"totalAmount": totalAmount,
+		"userName":    userName,
 	})
 }
 
@@ -68,6 +81,8 @@ func CreateExpense(c *gin.Context) {
 	// Get form data
 	description := c.PostForm("description")
 	amountStr := c.PostForm("amount")
+	category := c.PostForm("category")
+	paymentMethod := c.PostForm("payment_method")
 	dateStr := c.PostForm("date") // Get the date as a string (YYYY-MM-DD)
 	timeStr := c.PostForm("time") // Get the time as a string (HH:MM)
 
@@ -75,8 +90,8 @@ func CreateExpense(c *gin.Context) {
 	log.Printf("Received date: %s, time: %s", dateStr, timeStr)
 
 	// Validate inputs
-	if description == "" || amountStr == "" || dateStr == "" || timeStr == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Description, amount, date, and time are required"})
+	if description == "" || amountStr == "" || dateStr == "" || timeStr == "" || category == "" || paymentMethod == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Description, amount, category, payment method, date, and time are required"})
 		return
 	}
 
@@ -96,7 +111,7 @@ func CreateExpense(c *gin.Context) {
 	datetimeStr := dateStr + " " + timeStr
 
 	// Add expense to the database
-	_, err = models.AddExpense(userID, description, amount, datetimeStr)
+	_, err = models.AddExpense(userID, description, amount, category, paymentMethod, datetimeStr)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -146,12 +161,14 @@ func UpdateExpense(c *gin.Context) {
 	// Get form data
 	description := c.PostForm("description")
 	amountStr := c.PostForm("amount")
+	category := c.PostForm("category")
+	paymentMethod := c.PostForm("payment_method")
 	dateStr := c.PostForm("date") // Get the date as a string (YYYY-MM-DD)
 	timeStr := c.PostForm("time") // Get the time as a string (HH:MM:SS)
 
 	// Validate inputs
-	if description == "" || amountStr == "" || dateStr == "" || timeStr == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Description, amount, date, and time are required"})
+	if description == "" || amountStr == "" || dateStr == "" || timeStr == "" || category == "" || paymentMethod == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Description, amount, category, payment method, date, and time are required"})
 		return
 	}
 
@@ -171,7 +188,7 @@ func UpdateExpense(c *gin.Context) {
 	datetimeStr := dateStr + " " + timeStr
 
 	// Update the expense, pass createdAt as a string
-	err = models.UpdateExpense(id, userID, description, amount, datetimeStr)
+	err = models.UpdateExpense(id, userID, description, amount, category, paymentMethod, datetimeStr)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

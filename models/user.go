@@ -14,6 +14,7 @@ import (
 // User represents a user in the system
 type User struct {
 	ID        int
+	Name      string
 	Username  string
 	Email     string
 	Password  string // This will be the hashed password
@@ -21,7 +22,7 @@ type User struct {
 }
 
 // CreateUser adds a new user to the database (with password hashing)
-func CreateUser(username, email, password string) (int, error) {
+func CreateUser(name, username, email, password string) (int, error) {
 	// Check if username already exists
 	var exists bool
 	err := db.DB.QueryRow("SELECT EXISTS(SELECT 1 FROM users WHERE username = $1)", username).Scan(&exists)
@@ -50,15 +51,15 @@ func CreateUser(username, email, password string) (int, error) {
 	// Insert the new user
 	var userID int
 	err = db.DB.QueryRow(
-		"INSERT INTO users (username, email, password) VALUES ($1, $2, $3) RETURNING id",
-		username, email, string(hashedPassword),
+		"INSERT INTO users (name, username, email, password) VALUES ($1, $2, $3, $4) RETURNING id",
+		name, username, email, string(hashedPassword),
 	).Scan(&userID)
 
 	if err != nil {
 		return 0, err
 	}
 
-	log.Printf("User created: ID=%d, Username=%s", userID, username)
+	log.Printf("User created: ID=%d, Name=%s, Username=%s", userID, name, username)
 	return userID, nil
 }
 
@@ -66,9 +67,9 @@ func CreateUser(username, email, password string) (int, error) {
 func GetUserByUsername(username string) (*User, error) {
 	user := &User{}
 	err := db.DB.QueryRow(
-		"SELECT id, username, email, password, created_at FROM users WHERE username = $1",
+		"SELECT id, name, username, email, password, created_at FROM users WHERE username = $1",
 		username,
-	).Scan(&user.ID, &user.Username, &user.Email, &user.Password, &user.CreatedAt)
+	).Scan(&user.ID, &user.Name, &user.Username, &user.Email, &user.Password, &user.CreatedAt)
 
 	if err != nil {
 		if err == sql.ErrNoRows {
@@ -90,9 +91,9 @@ func (u *User) CheckPassword(password string) bool {
 func GetUserByID(id int) (*User, error) {
 	user := &User{}
 	err := db.DB.QueryRow(
-		"SELECT id, username, email, password, created_at FROM users WHERE id = $1",
+		"SELECT id, name, username, email, password, created_at FROM users WHERE id = $1",
 		id,
-	).Scan(&user.ID, &user.Username, &user.Email, &user.Password, &user.CreatedAt)
+	).Scan(&user.ID, &user.Name, &user.Username, &user.Email, &user.Password, &user.CreatedAt)
 
 	if err != nil {
 		if err == sql.ErrNoRows {
@@ -102,4 +103,22 @@ func GetUserByID(id int) (*User, error) {
 	}
 
 	return user, nil
+}
+
+// GetUsernameByID retrieves the username for a specific user ID
+func GetUserNameByID(userID int) (string, error) {
+	var username string
+	err := db.DB.QueryRow(
+		"SELECT name FROM users WHERE id = $1",
+		userID,
+	).Scan(&username)
+
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return "", errors.New("user not found")
+		}
+		return "", err
+	}
+
+	return username, nil
 }

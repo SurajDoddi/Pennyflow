@@ -33,29 +33,39 @@ body {
     z-index: 1000;
 }
 
+
 .logo-container {
     display: flex;
     align-items: center;
 }
 
 .logo {
-    width: 40px;
-    height: 40px;
-    background-color: var(--secondary-color);
-    border-radius: 50%;
-    margin-right: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--white);
-    font-weight: bold;
-}
+    height: 80px; /* Increase if you want it bigger */
+    margin-right: 1rem;
+  }
 
 .site-title {
     color: var(--white);
     font-size: 1.5rem;
     font-weight: 700;
 }
+
+.title-container {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .page-title {
+    margin: 0;
+    font-size: 1.8em;
+    color: #fff;
+  }
+  
+  .page-subtitle {
+    margin: 0;
+    font-size: 0.9em;
+    color: #bdc3c7;
+  }
 
 .nav-links {
     display: flex;
@@ -65,10 +75,11 @@ body {
 .nav-link {
     color: var(--white);
     text-decoration: none;
-    font-size: 0.9rem;
+    font-size: 1.1rem;
     text-transform: uppercase;
     letter-spacing: 1px;
     transition: color 0.3s ease;
+    font-weight: 700;
 }
 
 .nav-link:hover {

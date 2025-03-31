@@ -17,6 +17,7 @@ import (
 // Register handles user registration
 func Register(c *gin.Context) {
 	// Get user input from the form
+	name := c.PostForm("name")
 	username := c.PostForm("username")
 	email := c.PostForm("email")
 	password := c.PostForm("password")
@@ -30,7 +31,7 @@ func Register(c *gin.Context) {
 	}
 
 	// Create new user
-	userID, err := models.CreateUser(username, email, password)
+	userID, err := models.CreateUser(name, username, email, password)
 	if err != nil {
 		// Check if the error is a specific one (e.g., username or email already exists)
 		c.HTML(http.StatusBadRequest, "register.html", gin.H{

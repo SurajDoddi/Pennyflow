@@ -20,6 +20,15 @@ body {
   padding: 1rem 2rem;
 }
 
+.user-name {
+  font-size: 1.1em;
+  color: #fff;
+  font-weight: 500;
+}
+.user-name:hover {
+  color: #FF7043; /* Change color on hover */
+}
+
 /* LEFT SIDE: Logo + Title & Subtitle */
 .nav-left {
   display: flex;
@@ -84,6 +93,12 @@ body {
   border-radius: 4px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.2);
   z-index: 1000;
+}
+
+.dropdown-menu.show {
+  display: block;
+  width: 100%;
+  height: auto;
 }
 
 .dropdown-menu a {
