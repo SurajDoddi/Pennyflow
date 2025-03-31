@@ -1,0 +1,97 @@
+/* GLOBAL STYLES */
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f9fafb;
+    color: #333;
+  }
+  
+  /* NAVIGATION BAR (reusing similar styles as other pages) */
+  .navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #2C3E50;
+    padding: 1rem 2rem;
+  }
+  
+  .nav-left {
+    display: flex;
+    align-items: center;
+  }
+  
+  .logo {
+    height: 80px;
+    margin-right: 1rem;
+  }
+  
+  .title-container {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .page-title {
+    margin: 0;
+    font-size: 1.8em;
+    color: #fff;
+  }
+  
+  .page-subtitle {
+    margin: 0;
+    font-size: 0.9em;
+    color: #bdc3c7;
+  }
+  
+  .nav-right {
+    display: flex;
+    align-items: center;
+  }
+  
+  .user-dropdown {
+    display: flex;
+    align-items: center;
+  }
+  
+  .user-name {
+    margin-right: 1rem;
+    color: #fff;
+    font-weight: bold;
+  }
+  
+  .logout-link {
+    color: #FF7043;
+    text-decoration: none;
+    font-weight: bold;
+  }
+  
+  /* ANALYSIS CONTAINER */
+  .analysis-container {
+    max-width: 900px;
+    margin: 40px auto;
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 2rem;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    text-align: center;
+  }
+  
+  .analysis-container h2 {
+    color: #2C3E50;
+  }
+  
+  /* Responsive styling for the chart if needed */
+  @media (max-width: 768px) {
+    .navbar {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .page-title {
+      font-size: 1.5em;
+    }
+    .analysis-container {
+      margin: 20px;
+      padding: 1rem;
+    }
+  }
+  

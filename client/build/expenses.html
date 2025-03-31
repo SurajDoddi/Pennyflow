@@ -1,72 +1,119 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PennyFlow - Expenses</title>
-    <link rel="stylesheet" href="/static/css/expenses.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PennyFlow - Expenses</title>
+
+  <!-- Font Awesome for icons -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    integrity="sha512-..."
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  />
+
+  <!-- Link to your main CSS file -->
+  <link rel="stylesheet" href="/static/css/expenses.css">
 </head>
 <body>
-    <header>
-        <h1>Expense Tracker</h1>
-        <p>Track and Manage Your Expenses</p>
-    </header>
 
-    <div class="expenses-container">
-        {{if .expenses}}
-            <table class="expenses-table">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Description</th>
-                        <th>Amount</th>
-                        <th>Date</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {{range .expenses}}
-                        <tr>
-                            <td>{{.ID}}</td>
-                            <td>{{.Description}}</td>
-                            <td>${{printf "%.2f" .Amount}}</td>
-                            <td class="createdAt">{{.CreatedAt}}</td> <!-- Pass the raw CreatedAt value -->
-                        </tr>
-                    {{end}}
-                </tbody>
-            </table>
-
-            <div class="total-expenses">
-                Total Expenses: ${{printf "%.2f" .totalAmount}}
-            </div>
-        {{else}}
-            <div class="no-expenses">
-                No expenses recorded yet. Start tracking your spending!
-            </div>
-        {{end}}
-
-        <div class="action-buttons">
-            <a href="/add_expense" class="cta-button">Add New Expense</a>
-            <a href="/" class="secondary-button">Back to Home</a>
-        </div>
+  <!-- HEADER: Navigation Bar -->
+  <header class="navbar">
+    <!-- Left side: Logo + Title & Subtitle -->
+    <div class="nav-left">
+      <!-- Update the src if your logo file name/path differs -->
+      <img src="/static/assets/logo_Penny_Flow.png" alt="PennyFlow Logo" class="logo">
+      <div class="title-container">
+        <h1 class="page-title">Expense Tracker</h1>
+        <p class="page-subtitle">Track and Manage Your Expenses</p>
+      </div>
     </div>
 
-    <footer>
-        &copy; 2025 PennyFlow. All Rights Reserved.
-    </footer>
+    <!-- Right side: User Dropdown -->
+    <div class="nav-right">
+      <div class="user-dropdown" onclick="toggleDropdown()">
+        <span class="user-name">{{.UserName}}</span>
+        <!-- Replaced fa-caret-down with fa-bars -->
+        <i class="fa fa-bars caret-icon"></i>
 
-    <script>
-        function formatCreatedAt() {
-            const createdAtElements = document.querySelectorAll(".createdAt");
-            createdAtElements.forEach(element => {
-                const isoString = element.textContent;
-                const date = new Date(isoString);
-                const formattedDateTime = date.toLocaleString();
-                element.textContent = formattedDateTime;
-            });
+        <!-- Dropdown menu with "Analysis" and "Logout" -->
+        <div class="dropdown-menu" id="dropdownMenu">
+          <a href="/analysis"><i class="fa fa-chart-bar"></i> Analysis</a>
+          <a href="/logout"><i class="fa fa-sign-out-alt"></i> Logout</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <div class="expenses-container">
+    {{if .expenses}}
+      <table class="expenses-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Description</th>
+            <th>Amount</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{range .expenses}}
+            <tr>
+              <td>{{.ID}}</td>
+              <td>{{.Description}}</td>
+              <td>${{printf "%.2f" .Amount}}</td>
+              <td class="createdAt">{{.CreatedAt}}</td>
+            </tr>
+          {{end}}
+        </tbody>
+      </table>
+      <div class="total-expenses">
+        Total Expenses: ${{printf "%.2f" .totalAmount}}
+      </div>
+    {{else}}
+      <div class="no-expenses">
+        No expenses recorded yet. Start tracking your spending!
+      </div>
+    {{end}}
+
+    <div class="action-buttons">
+      <a href="/add_expense" class="cta-button">Add New Expense</a>
+      <a href="/" class="secondary-button">Back to Home</a>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    &copy; 2025 PennyFlow. All Rights Reserved.
+  </footer>
+
+  <!-- JAVASCRIPT: Dropdown toggle and date formatting -->
+  <script>
+    function toggleDropdown() {
+      document.getElementById('dropdownMenu').classList.toggle('show');
+    }
+
+    // Close dropdown if user clicks outside the dropdown area
+    window.onclick = function(event) {
+      if (!event.target.closest('.user-dropdown')) {
+        const dropdown = document.getElementById('dropdownMenu');
+        if (dropdown.classList.contains('show')) {
+          dropdown.classList.remove('show');
         }
+      }
+    };
 
-        // Call the function to format the dates after the page loads
-        document.addEventListener("DOMContentLoaded", formatCreatedAt);
-    </script>
+    // Format CreatedAt dates for each expense
+    document.addEventListener("DOMContentLoaded", function() {
+      const dateElements = document.querySelectorAll(".createdAt");
+      dateElements.forEach(function(element) {
+        const dateObj = new Date(element.textContent);
+        element.textContent = dateObj.toLocaleString();
+      });
+    });
+  </script>
 </body>
 </html>

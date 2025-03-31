@@ -29,7 +29,7 @@ func GetDSN() string {
 func GetPort() string {
 	port := os.Getenv("PORT")
 	if port == "" {
-		port = "8080" // Default port
+		port = "8081" // Default port
 	}
 	return port
 }

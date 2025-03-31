@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>PennyFlow - Analysis</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Load Chart.js from CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  av
+  <!-- Link to your analysis CSS -->
+  <link rel="stylesheet" href="/static/css/analysis.css">
+</head>
+<body>
+  <!-- HEADER: Navigation Bar (similar style to your other pages) -->
+  <header class="navbar">
+    <div class="nav-left">
+      <img src="/static/assets/logo_Penny_Flow.png" alt="PennyFlow Logo" class="logo">
+      <div class="title-container">
+        <h1 class="page-title">Penny Flow</h1>
+        <p class="page-subtitle">Track and Manage Your Expenses</p>
+      </div>
+    </div>
+    <div class="nav-right">
+      <div class="user-dropdown">
+        <span class="user-name">{{.UserName}}</span>
+        <a href="/logout" class="logout-link"><i class="fa fa-sign-out-alt"></i> Logout</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT: Analysis Chart -->
+  <div class="analysis-container">
+    <h2>Expense Breakdown by Category</h2>
+    <canvas id="expenseChart"></canvas>
+  </div>
+
+  <!-- JAVASCRIPT: Create the Chart -->
+  <script>
+    // The ExpenseData should be passed as a JSON array from your Go handler.
+    // For example: [{ "category": "Food", "amount": 150.0 }, { "category": "Transport", "amount": 80.0 }, ... ]
+    const expenseData = {{.ExpenseData}}; 
+
+    const labels = expenseData.map(item => item.category);
+    const amounts = expenseData.map(item => item.amount);
+
+    const ctx = document.getElementById('expenseChart').getContext('2d');
+    const expenseChart = new Chart(ctx, {
+      type: 'pie',
+      data: {
+        labels: labels,
+        datasets: [{
+          data: amounts,
+          backgroundColor: ['#FF7043', '#2C3E50', '#FF5722', '#34495e', '#bdc3c7'],
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: 'bottom' },
+          title: { display: true, text: 'Expenses by Category' }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
