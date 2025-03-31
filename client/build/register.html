@@ -1,42 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Up - Expense Tracker</title>
-    <link rel="stylesheet" href="/static/css/register.css">
+  <meta charset="UTF-8">
+  <title>Penny Flow - Sign Up</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Main CSS for the register page -->
+  <link rel="stylesheet" href="/static/css/register.css">
 </head>
 <body>
 
-    <div class="register-wrapper">
-        <div class="register-card">
-            <h2>Sign Up</h2>
-            <p>Join us to manage your expenses smartly</p>
-            <!-- Update form to use POST method and send data to the correct route -->
-            <form method="POST" action="/register">
-                <div class="input-group">
-                    <label for="name">Name</label>
-                    <input type="text" id="name" name="name" placeholder="Enter Name" required>
-                </div>
-                <div class="input-group">
-                    <label for="username">Username</label>
-                    <input type="text" id="username" name="username" placeholder="Enter username" required>
-                </div>
-                <div class="input-group">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" name="email" placeholder="Enter email" required>
-                </div>
-                <div class="input-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" name="password" placeholder="Enter password" required>
-                </div>
-                <button type="submit">Create Account</button>
-            </form>
-            
-            <p>Already have an account? <a href="/login">Login</a></p>
-            <p><a href="/">Back to Home</a></p>
-        </div>
+  <!-- HEADER: Navigation Bar -->
+  <header class="navbar">
+    <div class="nav-left">
+      <!-- Update the src if your logo file name/path differs -->
+      <img src="/static/assets/logo_Penny_Flow.png" alt="Penny Flow Logo" class="logo">
+      <div class="title-container">
+        <h1 class="page-title">Penny Flow</h1>
+        <p class="page-subtitle">Track and Manage Your Expenses</p>
+      </div>
     </div>
+  </header>
+
+  <!-- REGISTER FORM CONTAINER -->
+  <div class="register-container">
+    <div class="register-card">
+      <h2>Create Your Account</h2>
+      <p>Join us to manage your expenses smartly</p>
+      
+      <form method="POST" action="/register">
+        <div class="input-group">
+          <label for="name">Name</label>
+          <input type="text" id="name" name="name" placeholder="Enter your name" required>
+        </div>
+
+        <div class="input-group">
+          <label for="username">Username</label>
+          <input type="text" id="username" name="username" placeholder="Enter your username" required>
+        </div>
+
+        <div class="input-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" placeholder="Enter your email" required>
+        </div>
+
+        <div class="input-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" placeholder="Enter your password" required>
+        </div>
+
+        <button type="submit" class="register-button">Create Account</button>
+      </form>
+
+      <p class="login-text">
+        Already have an account? <a href="/login">Login</a>
+      </p>
+      <p><a href="/">Back to Home</a></p>
+    </div>
+  </div>
 
 </body>
 </html>

@@ -1,24 +1,57 @@
 body {
-    background: url('https://i.pinimg.com/736x/35/98/2d/35982d742990304afcdb0d3a16a52be6.jpg') no-repeat center center fixed;
-    background-size: cover;
-    font-family: 'Poppins', sans-serif;
-    /*background: #f4f6f9;*/
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
     margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #f0f0f0;
+    color: #333;
 }
 
-/* Wrapper */
-.register-wrapper {
+.navbar {
     display: flex;
-    justify-content: center;
     align-items: center;
-    width: 100%;
-}
+    background-color: #2C3E50; /* Dark header background */
+    padding: 1rem 2rem;
+  }
+  
+  /* Left side: Logo + Title & Subtitle */
+  .nav-left {
+    display: flex;
+    align-items: center;
+  }
+  
+  .logo {
+    height: 80px; /* Increase if you want it bigger */
+    margin-right: 1rem;
+  }
+  
+  .title-container {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .page-title {
+    margin: 0;
+    font-size: 1.8em;
+    color: #fff;
+  }
+  
+  .page-subtitle {
+    margin: 0;
+    font-size: 0.9em;
+    color: #bdc3c7;
+  }
 
 /* Card */
+.register-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 120px); /* Adjust based on your navbar height */
+    width: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
 .register-card {
     background: white;
     padding: 35px;
@@ -27,6 +60,8 @@ body {
     text-align: center;
     width: 320px;
 }
+
+  
 
 h2 {
     margin-bottom: 10px;
