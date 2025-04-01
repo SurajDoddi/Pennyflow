@@ -26,8 +26,9 @@ body {
 }
 
 .logo {
-  height: 80px; /* Increase if you want it bigger */
+  height: 83px; /* Increase if you want it bigger */
   margin-right: 1rem;
+  border: 2px solid white;
 }
 
 .title-container {

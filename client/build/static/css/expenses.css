@@ -36,8 +36,9 @@ body {
 }
 
 .logo {
-  height: 120px; /* Adjust as needed for your preferred logo size */
+  height: 122px; /* Adjust as needed for your preferred logo size */
   margin-right: 1rem;
+  border: 2px solid white;
 }
 
 .title-container {

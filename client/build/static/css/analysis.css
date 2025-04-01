@@ -22,9 +22,11 @@ body {
   }
   
   .logo {
-    height: 80px;
+    height: 83px; /* Slightly increased size */
     margin-right: 1rem;
+    border: 2px solid white; /* Added white border */
   }
+
   
   .title-container {
     display: flex;
