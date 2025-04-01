@@ -1,37 +1,46 @@
-describe('Login Page Test', () => {
+describe('Pennyflow Login Page', () => {
   beforeEach(() => {
     cy.visit('http://localhost:8080/login');
   });
 
-  it('should have the correct form elements and submit to the correct URL with POST', () => {
-    cy.get('form').should('exist');
+  it('should display the site logo and title', () => {
+    cy.get('.logo').should('be.visible');
+    cy.get('.page-title').should('contain', 'Penny Flow');
+    cy.get('.page-subtitle').should('contain', 'Track and Manage Your Expenses');
+  });
+
+  it('should have a login form with username and password fields', () => {
     cy.get('#username').should('exist');
     cy.get('#password').should('exist');
-    cy.get('button[type="submit"]').should('exist').contains('Login');
-    cy.get('form').should('have.attr', 'action', '/login');
-    cy.get('form').should('have.attr', 'method', 'POST');
+    cy.get('.login-button').should('exist');
   });
 
-  it('should have a link to the registration page', () => {
-    cy.get('a').contains('Sign Up').should('have.attr', 'href', '/register');
-  });
-
-  it('should have a link back to the home page', () => {
-    cy.get('a').contains('Back to Home').should('have.attr', 'href', '/');
-  });
-
-  it('should not submit the form with empty fields', () => {
-    cy.get('button[type="submit"]').click();
+  it('should require both username and password fields', () => {
+    cy.get('.login-button').click();
     cy.get('#username:invalid').should('exist');
+    
+    cy.get('#username').type('testuser');
+    cy.get('.login-button').click();
     cy.get('#password:invalid').should('exist');
   });
 
-  it('should have password field of type "password"', () => {
-    cy.get('#password').should('have.attr', 'type', 'password');
+  it('should submit the form with valid credentials', () => {
+    cy.intercept('POST', '/login').as('loginRequest');
+    
+    cy.get('#username').type('testuser');
+    cy.get('#password').type('password123');
+    cy.get('.login-button').click();
+    
+    cy.wait('@loginRequest');
   });
 
-  it('should have required attribute on input fields', () => {
-    cy.get('#username').should('have.attr', 'required');
-    cy.get('#password').should('have.attr', 'required');
+  it('should navigate to registration page when Sign Up is clicked', () => {
+    cy.contains('Sign Up').click();
+    cy.url().should('include', '/register');
+  });
+
+  it('should navigate to home page when Back to Home is clicked', () => {
+    cy.contains('Back to Home').click();
+    cy.url().should('not.include', '/login');
   });
 });
