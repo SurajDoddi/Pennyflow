@@ -1,248 +1,219 @@
-PennyFlow - Personal Finance Management Application
-Overview
-PennyFlow is a complete personal finance management system designed to help users monitor and organize their expenses efficiently. It includes a modern React.js frontend for an intuitive user experience and a secure Golang backend for robust data processing and API services. The app supports core financial features like expense tracking, user authentication, analytics, and reporting.
+# 📊 PennyFlow - Personal Finance Management Application
 
-Frontend Documentation
-Technologies Used
-Framework: React.js (v18+)
+**PennyFlow** is a comprehensive personal finance management system built to help users monitor, manage, and analyze their expenses effectively. It features a modern **React.js frontend** for an intuitive user experience and a secure **Golang backend** for robust data processing and API services. The application includes expense tracking, authentication, and insightful analytics.
 
-Routing: React Router v6
+---
 
-State Management: React Hooks (useState, useContext, useEffect)
+### For more information of frontend and backend, we have special readme files in the documentation folder with the names - Sprint4_frontend.md, Sprint4_backend.md.
 
-Charts: Chart.js integrated through React wrapper
 
-Styling: CSS-in-JS (with modular components)
+## 🖥️ Frontend Documentation
 
-Icon Set: Font Awesome
+### 🚀 Technologies Used
 
-Testing: Cypress (for end-to-end testing)
+- **Framework:** React.js (v18+)
+- **Routing:** React Router v6
+- **State Management:** React Hooks (`useState`, `useContext`, `useEffect`)
+- **Charts:** Chart.js (React wrapper)
+- **Styling:** CSS-in-JS with modular components
+- **Testing:** Cypress (E2E testing)
 
-How to Run Frontend
-Navigate to the frontend project directory
+### ▶️ How to Run Frontend
+```bash
+    # Navigate to the frontend directory
+    cd frontend
 
-Install dependencies:
+    # Install dependencies
+    npm install
 
-bash
-Copy
-Edit
-npm install
-Build the project:
+    # Build the project
+    npm run build
 
-bash
-Copy
-Edit
-npm run build
-Start the development server:
+    # Start the development server
+    npm start
+```
 
-bash
-Copy
-Edit
-npm run start
-Core Features (Frontend)
-Expense Tracking
-Users can add, update, and delete expenses
+### ⚙️ Core Features
 
-Expenses are categorized and associated with payment methods
+- **Expense Tracking**: Add, update, and delete expenses with categorization and payment methods.
+- **Analytics**: Real-time visualization using Chart.js:
+  - Pie chart: Category-wise breakdown
+  - Bar chart: Monthly trends
+  - Doughnut chart: Payment method usage
+- **Authentication**: login, registration, session management, and protected routes.
 
-Analytics
-Real-time charts showing spending patterns
+### 📁 Component Modules
 
-Pie chart: category-wise breakdown
+#### 🔐 Authentication Module
+- **Files**: `Login.js`, `Register.js`, `utils/api.js`
+- **Key Functions**:
+  - `login(userData)`
+  - `register(userData)`
+  - `logout()`
+  - `getExpenses()`
 
-Bar chart: monthly trends
+#### 💸 Expense Management Module
+- **Files**: `Expenses.js`, `AddExpense.js`
+- **Key Functions**:
+  - `handleAddExpense(expenseData)`
+  - `handleUpdateExpense(id, expenseData)`
+  - `handleDeleteExpense(id)`
+  - `fetchExpenses(filters)`
 
-Doughnut chart: payment method usage
+#### 📈 Analytics Module
+- **File**: `Analysis.js`
+- **Key Functions**:
+  - `createCategoryChart()`
+  - `createTrendChart()`
+  - `createPaymentMethodChart()`
+  - `calculateKeyMetrics()`
 
-Authentication
-Users can register and log in
+### 💡 UI Features
 
-Protected routes are implemented using JWT
+- Fully responsive design  
+- Modular and reusable components  
+- Form validation  
+- Interactive and dynamic chart rendering  
+- Context-aware navigation and menus  
 
-Session management and logout are fully functional
+---
 
-Component Modules
-Authentication Module
-Files: Login.js, Register.js, utils/api.js
-Key Functions:
+## ✅ Cypress Testing
 
-login(userData)
+### ▶️ Run Cypress Tests
 
-register(userData)
+    npm run cypress:run
+    npm run cypress:run --spec "cypress/e2e/login.cy.js"
+    npm run cypress:open
 
-logout()
+### 🧪 Test Files
 
-getExpenses()
+- `login.cy.js` – Validates login functionality  
+- `register.cy.js` – Tests user registration  
+- `expenses.cy.js` – Verifies add, edit, delete operations  
+- `analysis.cy.js` – Checks chart rendering and analytics 
+- `about.cy.js` – Tests the “About Us” page content and layout
+- `add_expense.cy.js` – Verifies the add-expense form, validations, and success messages
+- `index.cy.js` – Entry point for Cypress tests; typically used to configure or bootstrap
 
-Expense Management Module
-Files: Expenses.js, AddExpense.js
-Key Functions:
 
-handleAddExpense(expenseData)
+---
 
-handleUpdateExpense(id, expenseData)
+## 🔧 Backend Documentation
 
-handleDeleteExpense(id)
+### 📦 Repository
 
-fetchExpenses(filters)
-
-Analytics Module
-File: Analysis.js
-Key Functions:
-
-createCategoryChart()
-
-createTrendChart()
-
-createPaymentMethodChart()
-
-calculateKeyMetrics()
-
-UI Features
-Fully responsive design
-
-Reusable form components with validation
-
-Interactive Chart.js graphs
-
-Dynamic menus and context-aware navigation
-
-Cypress Testing
-How to Run Cypress Tests:
-bash
-Copy
-Edit
-npm run cypress:run
-npm run cypress:run --spec "cypress/e2e/login.cy.js"
-npm run cypress:open
-Test Files:
-login.cy.js: Tests login process
-
-register.cy.js: Tests registration scenarios
-
-expenses.cy.js: Tests adding, editing, deleting expenses
-
-analysis.cy.js: Validates charts and data rendering
-
-Backend Documentation (Sprint 4)
-Repository
 GitHub: https://github.com/SurajDoddi/Pennyflow.git
 
-Completed Work
-Expense management (create, edit, delete)
+### ✅ Completed Features
 
-Categorized expense analysis
+- Secure authentication with Postgres 
+- Categorized expense analytics  
+- API documentation  
+- Unit testing for all handlers and middleware  
 
-Backend API documentation
+### 🛠️ Technologies Used
 
-Full unit testing for handlers
+- **Language**: Go (Golang 1.6+)
+- **Framework**: Gin Gonic  
+- **Database**: PostgreSQL  
+- **ORM**: GORM  
 
-Secure JWT-based authentication
+### ⚙️ Environment Setup
 
-Technologies Used (Backend)
-Language: Go (Golang 1.6+)
+Create a `.env` file in the backend directory:
 
-Framework: Gin Gonic
+    DB_HOST=localhost
+    DB_PORT=5432
+    DB_USER=postgres
+    DB_PASSWORD=your_password
+    DB_NAME=pennyflow_db
 
-Database: PostgreSQL
+> ⚠️ The `.env` file is excluded from version control for security purposes.
 
-ORM: GORM
+### ▶️ How to Run Backend
+```bash
+    # Navigate to backend directory
+    cd backend
 
-Authentication: JSON Web Tokens (JWT)
+    # Run the Go server
+    go run main.go
+```
 
-Environment Setup
-Create a .env file in the backend project folder with the following variables:
+---
 
-ini
-Copy
-Edit
-DB_HOST=localhost
-DB_PORT=5432
-DB_USER=postgres
-DB_PASSWORD=your_password
-DB_NAME=pennyflow_db
-Note: .env is intentionally excluded from GitHub to protect sensitive data.
+## 📡 API Documentation
 
-How to Run Backend
-Open a terminal inside the backend folder
+### 🔐 Authentication Endpoints
 
-Run the server using:
+#### POST `/register`
 
-bash
-Copy
-Edit
-go run main.go
-API Documentation
-Authentication Endpoints
-POST /register
-Registers a new user.
+    {
+      "name": "Full Name",
+      "username": "username",
+      "email": "user@example.com",
+      "password": "password"
+    }
 
-json
-Copy
-Edit
-{
-  "name": "Full Name",
-  "username": "username",
-  "email": "user@example.com",
-  "password": "password"
-}
-POST /login
-Logs the user in.
+#### POST `/login`
 
-json
-Copy
-Edit
-{
-  "username": "username",
-  "password": "password"
-}
-GET /logout
-Logs the user out.
+    {
+      "username": "username",
+      "password": "password"
+    }
 
-Expense Management Endpoints
-GET /expenses
+#### GET `/logout`
+
+Logs out the user.
+
+---
+
+### 💸 Expense Management Endpoints
+
+#### GET `/expenses`
+
 Returns all expenses for the authenticated user.
 
-POST /expenses
-Creates a new expense.
+#### POST `/expenses`
 
-json
-Copy
-Edit
-{
-  "description": "Groceries",
-  "amount": "45.67",
-  "category": "Food",
-  "payment_method": "Credit Card",
-  "date": "2023-05-15",
-  "time": "10:30"
-}
-PUT /expenses/:id
-Updates an expense by ID.
+    {
+      "description": "Groceries",
+      "amount": "45.67",
+      "category": "Food",
+      "payment_method": "Credit Card",
+      "date": "2023-05-15",
+      "time": "10:30"
+    }
 
-DELETE /expenses/:id
-Deletes an expense by ID.
+#### PUT `/expenses/:id`
 
-Analysis Endpoint
-GET /analysis
-Returns expense data grouped by category.
-Example response:
+Updates expense by ID
 
-json
-Copy
-Edit
-{
-  "categories": [
-    {"name": "Food", "amount": 45.67},
-    {"name": "Transportation", "amount": 35.50}
-  ],
-  "total": 81.17
-}
-Backend Unit Testing
-Registration/Login/Logout
+#### DELETE `/expenses/:id`
 
-Expense CRUD operations
+Deletes expense by ID
 
-Middleware (JWT check)
+---
 
-Data analysis grouping and totals
+### 📊 Analysis Endpoint
+
+#### GET `/analysis`
+
+    {
+      "categories": [
+        {"name": "Food", "amount": 45.67},
+        {"name": "Transportation", "amount": 35.50}
+      ],
+      "total": 81.17
+    }
+
+---
+
+## 🧪 Backend Unit Testing
+
+- Authentication: Register, login, logout  
+- Analytics grouping and totals  
+
+---
+
+© 2025 PennyFlow | Designed with 💡 and built with Go & React
