@@ -397,15 +397,16 @@ function Home() {
         }
         
         .cta-button.secondary {
-          background-color: white;
-          color: #2D3E50;
-          border: 1px solid #e2e8f0;
+          background-color: transparent;
+          color: white;
+          border: 1px solid white;
         }
         
         .cta-button.secondary:hover {
-          background-color: #f8fafc;
+          background-color: rgba(255, 255, 255, 0.1);
           transform: translateY(-3px);
-          box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+          box-shadow: 0 4px 10px rgba(255, 255, 255, 0.1);
+          color: white;
         }
         
         .cta-button.large {

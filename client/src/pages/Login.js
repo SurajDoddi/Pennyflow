@@ -128,15 +128,6 @@ function Login() {
               </button>
             </form>
 
-            <div className="auth-divider">
-              <span>OR</span>
-            </div>
-
-            <button className="social-button google">
-              <i className="fab fa-google"></i>
-              Continue with Google
-            </button>
-
             <p className="auth-redirect">
               Don't have an account? <Link to="/register">Create Account</Link>
             </p>
@@ -343,53 +334,6 @@ function Login() {
         .auth-button.loading {
           opacity: 0.8;
           cursor: not-allowed;
-        }
-        
-        .auth-divider {
-          display: flex;
-          align-items: center;
-          margin: 1.5rem 0;
-          color: #94a3b8;
-        }
-        
-        .auth-divider::before,
-        .auth-divider::after {
-          content: "";
-          flex: 1;
-          height: 1px;
-          background-color: #e2e8f0;
-        }
-        
-        .auth-divider span {
-          padding: 0 1rem;
-          font-size: 0.9rem;
-        }
-        
-        .social-button {
-          width: 100%;
-          padding: 12px;
-          background-color: white;
-          border: 1px solid #e2e8f0;
-          border-radius: 8px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 10px;
-          font-size: 1rem;
-          font-weight: 500;
-          cursor: pointer;
-          transition: all 0.3s;
-          margin-bottom: 1.5rem;
-        }
-        
-        .social-button:hover {
-          background-color: #f8fafc;
-          transform: translateY(-2px);
-          box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-        }
-        
-        .social-button.google i {
-          color: #4285F4;
         }
         
         .auth-redirect {

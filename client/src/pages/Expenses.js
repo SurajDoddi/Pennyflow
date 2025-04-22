@@ -230,17 +230,16 @@ function Expenses() {
         <div className="nav-right">
           <div className="user-dropdown" ref={dropdownRef}>
             <button className="user-button" onClick={toggleDropdown}>
-              <i className="fa fa-user-circle"></i>
               <span className="user-name">{userName}</span>
-              <i className="fa fa-chevron-down"></i>
+              <i className="fas fa-bars"></i>
             </button>
 
             <div className={`dropdown-menu ${showDropdown ? 'show' : ''}`}>
               <Link to="/analysis" className="dropdown-item">
-                <i className="fa fa-chart-bar"></i> Analysis
+                <i className="fas fa-chart-bar"></i> Analysis
               </Link>
               <button onClick={handleLogout} className="dropdown-item">
-                <i className="fa fa-sign-out-alt"></i> Logout
+                <i className="fas fa-sign-out-alt"></i> Logout
               </button>
             </div>
           </div>
