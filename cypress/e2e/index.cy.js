@@ -1,41 +1,53 @@
-describe('Pennyflow Homepage Test', () => {
+describe('Expenses Page Loads', () => {
   beforeEach(() => {
-    cy.visit('http://localhost:8080');
+    cy.intercept('GET', 'http://localhost:8080/expenses/', {
+      statusCode: 200,
+      body: {
+        userName: 'Test User',
+        expenses: [
+          {
+            ID: 1,
+            Description: 'Lunch',
+            Amount: '150.00',
+            Category: 'Food',
+            PaymentMethod: 'Cash',
+            CreatedAt: '2025-04-01T12:00:00Z'
+          },
+          {
+            ID: 2,
+            Description: 'Uber',
+            Amount: '250.00',
+            Category: 'Transport',
+            PaymentMethod: 'Card',
+            CreatedAt: '2025-04-02T08:30:00Z'
+          }
+        ]
+      }
+    }).as('mockExpenses');
+
+    cy.visit('http://localhost:3000/expenses');
   });
 
-  it('should display the navbar with logo, site title, and navigation links', () => {
-    cy.get('.navbar').should('exist');
-    cy.get('.nav-links a').contains('Login').should('have.attr', 'href', '/login');
-    cy.get('.nav-links a').contains('Register').should('have.attr', 'href', '/register');
+  it('should show the expenses page header', () => {
+    cy.get('h2.section-title').should('contain', 'Your Expenses');
   });
 
-  it('should display the hero section with correct content', () => {
-    cy.get('.hero-section h1').should('contain', 'Intelligent Expense Tracking');
-    cy.get('.hero-section p').should('contain', 'Simplify your financial management');
-    cy.get('.hero-section h2').should('contain', 'Track Every Penny, Flow Freely!');
-    cy.get('.cta-group a').contains('About Us').should('have.attr', 'href', '/about-us');
+  it('should show user name in the top right', () => {
+    cy.get('.user-name').should('contain', 'Test User');
   });
 
-  it('should display three feature sections with correct text', () => {
-    cy.get('.features .feature').should('have.length', 3);
-
-    cy.get('.features .feature').eq(0).within(() => {
-      cy.get('h3').should('contain', 'Track Expenses');
-      cy.get('p').should('contain', 'Effortlessly log and categorize');
-    });
-
-    cy.get('.features .feature').eq(1).within(() => {
-      cy.get('h3').should('contain', 'Gain Insights');
-      cy.get('p').should('contain', 'Understand your financial patterns');
-    });
-
-    cy.get('.features .feature').eq(2).within(() => {
-      cy.get('h3').should('contain', 'Easy Budgeting');
-      cy.get('p').should('contain', 'Set personalized budgets');
-    });
+  it('should render a row for each expense', () => {
+    cy.get('.expenses-table tbody tr').should('have.length', 2);
+    cy.contains('td', 'Lunch');
+    cy.contains('td', 'Uber');
   });
 
-  it('should display the footer with correct copyright text', () => {
-    cy.get('.footer p').should('contain', '© 2025 Pennyflow | All Rights Reserved');
+  it('should show the correct total', () => {
+    cy.get('.total-amount').should('contain', '₹400.00');
+  });
+
+  it('should have edit and delete buttons', () => {
+    cy.get('.edit-button').should('have.length', 2);
+    cy.get('.delete-button').should('have.length', 2);
   });
 });

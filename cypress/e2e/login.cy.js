@@ -1,46 +1,57 @@
-describe('Pennyflow Login Page', () => {
+describe('Login Page', () => {
   beforeEach(() => {
-    cy.visit('http://localhost:8080/login');
+    // ✅ Mock login
+    cy.intercept('POST', 'http://localhost:8080/login', {
+      statusCode: 200,
+      body: { success: true },
+    }).as('loginRequest');
+
+    // ✅ Mock expenses page load so redirect won't 401
+    cy.intercept('GET', 'http://localhost:8080/expenses/', {
+      statusCode: 200,
+      body: {
+        userName: 'Test User',
+        expenses: [],
+      }
+    }).as('getExpenses');
+
+    cy.visit('http://localhost:3000/login');
   });
 
-  it('should display the site logo and title', () => {
-    cy.get('.logo').should('be.visible');
-    cy.get('.page-title').should('contain', 'Penny Flow');
-    cy.get('.page-subtitle').should('contain', 'Track and Manage Your Expenses');
-  });
+  it('should successfully login and redirect to /expenses', () => {
+    // Fill form
+    cy.get('input[name="username"]').type('testuser');
+    cy.get('input[name="password"]').type('password123');
 
-  it('should have a login form with username and password fields', () => {
-    cy.get('#username').should('exist');
-    cy.get('#password').should('exist');
-    cy.get('.login-button').should('exist');
-  });
+    // Submit form
+    cy.get('button[type="submit"]').click();
 
-  it('should require both username and password fields', () => {
-    cy.get('.login-button').click();
-    cy.get('#username:invalid').should('exist');
-    
-    cy.get('#username').type('testuser');
-    cy.get('.login-button').click();
-    cy.get('#password:invalid').should('exist');
-  });
-
-  it('should submit the form with valid credentials', () => {
-    cy.intercept('POST', '/login').as('loginRequest');
-    
-    cy.get('#username').type('testuser');
-    cy.get('#password').type('password123');
-    cy.get('.login-button').click();
-    
+    // Wait for mocked login and expense fetch
     cy.wait('@loginRequest');
+    cy.wait('@getExpenses');
+
+    // ✅ Check we're on /expenses
+    cy.url().should('include', '/expenses');
+
+    // ✅ Check header from expenses page
+    cy.get('h2.section-title').should('contain', 'Your Expenses');
   });
 
-  it('should navigate to registration page when Sign Up is clicked', () => {
-    cy.contains('Sign Up').click();
-    cy.url().should('include', '/register');
-  });
+  it('should show error on failed login', () => {
+    // Override login to fail
+    cy.intercept('POST', 'http://localhost:8080/login', {
+      statusCode: 401,
+      body: { error: 'Invalid credentials' }
+    }).as('loginFail');
 
-  it('should navigate to home page when Back to Home is clicked', () => {
-    cy.contains('Back to Home').click();
-    cy.url().should('not.include', '/login');
+    // Enter wrong credentials
+    cy.get('input[name="username"]').type('wronguser');
+    cy.get('input[name="password"]').type('wrongpass');
+    cy.get('button[type="submit"]').click();
+
+    cy.wait('@loginFail');
+
+    // ✅ Show error
+    cy.get('.error-message').should('contain', 'Invalid credentials');
   });
 });

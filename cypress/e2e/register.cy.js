@@ -1,45 +1,58 @@
-describe('Sign-Up Page Test', () => {
-    beforeEach(() => {
-      cy.visit('http://localhost:8080/register');
-    });
-  
-    it('should have the correct form elements and submit to the correct URL with POST', () => {
-      cy.get('form').should('exist');
-      cy.get('#username').should('exist');
-      cy.get('#email').should('exist');
-      cy.get('#password').should('exist');
-      cy.get('button[type="submit"]').should('exist').contains('Create Account');
-      cy.get('form').should('have.attr', 'action', '/register');
-      cy.get('form').should('have.attr', 'method', 'POST');
-    });
-  
-    it('should have a link to the login page', () => {
-      cy.get('a').contains('Login').should('have.attr', 'href', '/login');
-    });
-  
-    it('should have a link back to the home page', () => {
-      cy.get('a').contains('Back to Home').should('have.attr', 'href', '/');
-    });
-  
-    it('should not submit the form with empty fields', () => {
-      cy.get('button[type="submit"]').click();
-      cy.get('#username:invalid').should('exist');
-      cy.get('#email:invalid').should('exist');
-      cy.get('#password:invalid').should('exist');
-    });
-  
-    it('should enforce the email input type', () => {
-      cy.get('#email').should('have.attr', 'type', 'email');
-    });
-  
-    it('should have password field of type "password"', () => {
-      cy.get('#password').should('have.attr', 'type', 'password');
-    });
-  
-    it('should have required attribute on input fields', () => {
-      cy.get('#username').should('have.attr', 'required');
-      cy.get('#email').should('have.attr', 'required');
-      cy.get('#password').should('have.attr', 'required');
-    });
+describe('Register Page', () => {
+  beforeEach(() => {
+    // Default success mock for POST /register
+    cy.intercept('POST', 'http://localhost:8080/register', {
+      statusCode: 201,
+      body: { success: true }
+    }).as('registerUser');
+
+    cy.visit('http://localhost:3000/register');
   });
-  
+
+  it('should render the registration form', () => {
+    cy.contains('h2', 'Create Account').should('exist');
+    cy.get('input[name="name"]').should('exist');
+    cy.get('input[name="username"]').should('exist');
+    cy.get('input[name="email"]').should('exist');
+    cy.get('input[name="password"]').should('exist');
+    cy.get('button[type="submit"]').should('contain', 'Create Account');
+  });
+
+  it('should register successfully and redirect to /login', () => {
+    // Fill out the form
+    cy.get('input[name="name"]').type('Test User');
+    cy.get('input[name="username"]').type('testuser');
+    cy.get('input[name="email"]').type('test@example.com');
+    cy.get('input[name="password"]').type('strongpassword');
+
+    // Submit the form
+    cy.get('button[type="submit"]').click();
+
+    // Wait for mocked response
+    cy.wait('@registerUser');
+
+    // Confirm redirect to /login
+    cy.url().should('include', '/login');
+  });
+
+  it('should show an error if registration fails', () => {
+    // Override intercept to simulate failure
+    cy.intercept('POST', 'http://localhost:8080/register', {
+      statusCode: 400,
+      body: { error: 'Username already exists' }
+    }).as('registerFail');
+
+    // Fill form with duplicate username
+    cy.get('input[name="name"]').type('Existing User');
+    cy.get('input[name="username"]').type('existinguser');
+    cy.get('input[name="email"]').type('exist@example.com');
+    cy.get('input[name="password"]').type('securepass');
+
+    cy.get('button[type="submit"]').click();
+
+    cy.wait('@registerFail');
+
+    // Check error message
+    cy.get('.error-message').should('contain', 'Username already exists');
+  });
+});

@@ -1,33 +1,54 @@
 describe('PennyFlow Expenses Page', () => {
   beforeEach(() => {
-    // Log in before visiting the expenses page
-    cy.visit('http://localhost:8080/login');
-    cy.get('#username').type('charchika349'); // Replace with valid username
-    cy.get('#password').type('Viratkohli@18'); // Replace with valid password
-    cy.get('.login-button').click();
+    cy.intercept('GET', 'http://localhost:8080/expenses/', {
+      statusCode: 200,
+      body: {
+        userName: 'Test User',
+        expenses: [
+          {
+            ID: 1,
+            Description: 'Lunch',
+            Amount: '150.00',
+            Category: 'Food',
+            PaymentMethod: 'Cash',
+            CreatedAt: '2025-04-01T12:00:00Z'
+          },
+          {
+            ID: 2,
+            Description: 'Uber Ride',
+            Amount: '250.00',
+            Category: 'Transport',
+            PaymentMethod: 'Card',
+            CreatedAt: '2025-04-02T15:30:00Z'
+          }
+        ]
+      }
+    }).as('getExpenses');
 
-    // Wait for the page to redirect and load the expenses page
-    cy.url().should('include', '/expenses');
+    cy.visit('http://localhost:3000/expenses');
   });
 
-  it('should display the header with title and description', () => {
-    cy.get('header h1').should('contain', 'Expense Tracker');
-    cy.get('header p').should('contain', 'Track and Manage Your Expenses');
+  it('should show header and user name', () => {
+    cy.get('header').should('exist');
+    cy.get('.user-name').should('contain', 'Test User');
   });
 
-  it('should display the expense table if expenses exist', () => {
-    // Verify the table exists
-    cy.get('.expenses-table').should('exist');
-    cy.get('.expenses-table th').should('have.length', 4); // Check if there are 4 columns
-    cy.get('.expenses-table tbody tr').should('have.length.greaterThan', 0); // Ensure there are rows
+  it('should render the expenses table with data', () => {
+    cy.get('.expenses-table tbody tr').should('have.length', 2);
+    cy.contains('td', 'Lunch');
+    cy.contains('td', 'Uber Ride');
   });
 
-  it('should display action buttons with correct links', () => {
-    cy.get('.action-buttons a').contains('Add New Expense').should('have.attr', 'href', '/add_expense');
-    cy.get('.action-buttons a').contains('Back to Home').should('have.attr', 'href', '/');
+  it('should show total expenses correctly', () => {
+    cy.get('.total-amount').should('contain', '₹400.00');
   });
 
-  it('should display the footer with correct copyright text', () => {
-    cy.get('footer').should('contain', '© 2025 PennyFlow. All Rights Reserved.');
+  it('should have Edit and Delete buttons for each expense', () => {
+    cy.get('.edit-button').should('have.length', 2);
+    cy.get('.delete-button').should('have.length', 2);
+  });
+
+  it('should show Add New Expense button', () => {
+    cy.contains('a', 'Add New Expense').should('exist');
   });
 });

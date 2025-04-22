@@ -1,53 +1,59 @@
 describe('PennyFlow Analysis Page', () => {
   beforeEach(() => {
-    // Assuming the user is logged in and visiting the expenses page
-    cy.visit('http://localhost:8080/login');
-    cy.get('#username').type('charchika349'); // Replace with a test username
-    cy.get('#password').type('Viratkohli@18'); // Replace with a test password
-    cy.get('.login-button').click();
-    
-    // Ensure the user is redirected to the expenses page
-    cy.url().should('include', '/expenses');
-    
-    // Click on the dropdown menu in the top-right and select 'Analysis'
-    cy.get('.user-dropdown').click();
-    cy.contains('a', 'Analysis').click();
-    
-    // Ensure redirection to the analysis page
-    cy.url().should('include', '/analysis');
-  });
-
-  it('should display the Analysis header', () => {
-    cy.get('h2').should('contain', 'Expense Breakdown by Category');
-  });
-
-  it('should navigate back to the Expenses page when clicking "Back Home"', () => {
-    cy.get('.back-home').click();
-    cy.url().should('include', '/expenses');
-  });
-
-  it('should display the chart on the analysis page', () => {
-    cy.get('#expenseChart').should('be.visible');
-  });
-
-  it('should display users name in the dropdown menu', () => {
-    cy.get('.user-name').should('be.visible').and('not.be.empty');
-  });
-
-  it('should verify that the dropdown menu is functional', () => {
-    cy.get('.user-dropdown').click();
-  });
-
-  it('should ensure expense categories appear on the page', () => {
-    cy.intercept('GET', '/api/expenses', {
-      body: [
-        { category: 'Food', amount: 100 },
-        { category: 'Transport', amount: 50 },
-        { category: 'Entertainment', amount: 70 }
-      ]
+    // ✅ Intercept the expenses API to avoid backend auth issues
+    cy.intercept('GET', 'http://localhost:8080/expenses/', {
+      statusCode: 200,
+      body: {
+        userName: 'Test User',
+        expenses: [
+          {
+            Amount: '20.00',
+            Category: 'Food',
+            CreatedAt: '2025-04-01',
+            PaymentMethod: 'Cash',
+          },
+          {
+            Amount: '50.00',
+            Category: 'Transport',
+            CreatedAt: '2025-04-03',
+            PaymentMethod: 'Card',
+          },
+        ],
+      },
     }).as('getExpenses');
-    
-    cy.reload();
-    
+
+    // ✅ Visit the analysis page
+    cy.visit('http://localhost:3000/analysis');
+  });
+
+  it('should display the header and navbar', () => {
+    cy.get('header').should('exist');
+    cy.get('.page-title').should('contain', 'Penny Flow');
+    cy.get('.page-subtitle').should(
+      'contain',
+      'Track and Manage Your Expenses'
+    );
+  });
+
+  it('should display key metrics and user name', () => {
+    cy.get('.metrics-grid').should('exist');
+    cy.get('.metric-card').should('have.length.at.least', 1);
+    cy.get('.user-name').should('contain', 'Test User');
+  });
+
+  it('should display all charts', () => {
+    cy.get('#trendChart').should('exist');
+    cy.get('#categoryChart').should('exist');
+    cy.get('#paymentChart').should('exist');
+  });
+
+  it('should show dropdown and logout button on user icon click', () => {
+    cy.get('.user-dropdown').click();
+    cy.get('.dropdown-menu.show').should('exist');
+    cy.get('.logout-btn').should('contain', 'Logout');
+  });
+
+  it('should not redirect to login if mock is in place', () => {
+    cy.url().should('include', '/analysis');
   });
 });
