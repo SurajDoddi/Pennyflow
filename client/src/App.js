@@ -4,6 +4,12 @@ import './App.css';
 
 // Import pages
 import Home from './pages/Home';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import About from './pages/About';
+import AddExpense from './pages/AddExpense';
+import Analysis from './pages/Analysis';
+import Expenses from './pages/Expenses';
 
 function App() {
   return (
@@ -14,6 +20,7 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/about-us" element={<About />} />
         <Route path="/add_expense" element={<AddExpense />} />
+        <Route path="/analysis" element={<Analysis />} />
         <Route path="/expenses" element={<Expenses />} />
       </Routes>
     </Router>
