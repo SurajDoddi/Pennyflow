@@ -7,6 +7,7 @@
 PennyFlow is an enterprise-grade personal finance management application designed to provide users with a complete solution for tracking expenses and generating meaningful financial insights. The platform is built with a focus on modern frontend architecture, secure authentication, and responsive design, delivering a seamless user experience.
 
 ## Command to Execute Front-end
+Go to the client folder and use the following command to run the client - 
 - **To build**
 ```bash
 npm run build
